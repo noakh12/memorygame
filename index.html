@@ -77,26 +77,30 @@
         );
 
         const GameGrid = () => (
-    <div class="game-grid">
-        <div class="game-tile">
-            <a href="/privacygames/hr-awareness-game">
-                <img src="https://i.postimg.cc/6qVK1m8s/hrpri.png" alt="HR Awareness Game">
-                <h2>Privacy Awareness Game</h2>
-            </a>
-        </div>
-        <div class="game-tile">
-            <a href="/privacygames/dsrgame">
-                <img src="https://i.postimg.cc/L6QmG4L9/dsrotnot.png" alt="Customer Support Awareness Game">
-                <h2>Customer Support Awareness Game</h2>
-            </a>
-        </div>
-        <!-- Add more game tiles as needed -->
-    </div>
+            <div className="game-grid">
+                <GameTile 
+                    href="/privacygames/hr-awareness-game"
+                    imgSrc="https://i.postimg.cc/6qVK1m8s/hrpri.png"
+                    altText="HR Awareness Game"
+                    title="Privacy Awareness Game"
+                />
+                <GameTile 
+                    href="/privacygames/dsrgame"
+                    imgSrc="https://i.postimg.cc/L6QmG4L9/dsrotnot.png"
+                    altText="Customer Support Awareness Game"
+                    title="Customer Support Awareness Game"
+                />
+            </div>
+        );
+
+        ReactDOM.render(<GameGrid />, document.getElementById('game-root'));
+
     <div style="margin-top: 20px; text-align: center;">
     <a href="https://hoggo.io" target="_blank" rel="noopener noreferrer">
         Powered by hoggo<br>
         <img src="https://i.postimg.cc/y855N0xG/poweredby-1.png" alt="Powered by hoggo" style="margin-top: 10px; max-width: 200px;">
     </a>
+    </script>
 </div>
 </body>
 </html>

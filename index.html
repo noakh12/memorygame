@@ -54,6 +54,29 @@
 </head>
 <body>
     <h1>Privacy Awareness Games</h1>
+        <div id="game-root"></div>
+
+    <!-- React, ReactDOM, and Babel -->
+    <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+
+    <!-- Your game scripts -->
+    <script type="text/babel" src="privacygames/hr-awareness-game.js"></script>
+    <script type="text/babel" src="privacygames/dsrgame.js"></script>
+
+    <!-- Main app script -->
+    <script type="text/babel">
+        const GameTile = ({ href, imgSrc, altText, title }) => (
+            <div className="game-tile">
+                <a href={href}>
+                    <img src={imgSrc} alt={altText} />
+                    <h2>{title}</h2>
+                </a>
+            </div>
+        );
+
+        const GameGrid = () => (
     <div class="game-grid">
         <div class="game-tile">
             <a href="/privacygames/hr-awareness-game">

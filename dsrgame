@@ -14,7 +14,7 @@
     
     <script type="text/babel" src="DSRIdentificationGame.js"></script>
     <script type="text/babel">
-        ReactDOM.render(<DSRIdentificationGame />, document.getElementById('root'));
+        ReactDOM.render(React.createElement(DSRIdentificationGame), document.getElementById('root'));
     </script>
 </body>
 </html>

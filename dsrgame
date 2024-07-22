@@ -7,12 +7,11 @@
 </head>
 <body>
     <div id="root"></div>
-
     <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
     
-    <script type="text/babel" src="DSRIdentificationGame.js"></script>
+    <script type="text/babel" src="./DSRIdentificationGame.js"></script>
     <script type="text/babel">
         ReactDOM.render(React.createElement(DSRIdentificationGame), document.getElementById('root'));
     </script>

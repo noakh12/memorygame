@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Customer Support Awareness Game</title>
+    <title>DSR Identification Game</title>
 </head>
 <body>
-    <div id="game-root"></div>
+    <div id="root"></div>
 
     <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
     
-    <script type="text/babel" src="dsrgame.js"></script>
+    <script type="text/babel" src="DSRIdentificationGame.js"></script>
     <script type="text/babel">
-        ReactDOM.render(<DSRIdentificationGame />, document.getElementById('game-root'));
+        ReactDOM.render(<DSRIdentificationGame />, document.getElementById('root'));
     </script>
 </body>
 </html>

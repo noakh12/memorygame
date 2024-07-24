@@ -16,7 +16,7 @@
     <script>
         console.log("Game script loaded, attempting to render");
         try {
-            ReactDOM.render(React.createElement(DSRIdentificationGame), document.getElementById('root'));
+            ReactDOM.render(React.createElement(window.DSRIdentificationGame), document.getElementById('root'));
             console.log("Render completed without errors");
         } catch (error) {
             console.error("Error rendering game:", error);

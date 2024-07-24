@@ -6,9 +6,6 @@ const allTickets = [
 
 console.log("allTickets defined:", allTickets.length, "tickets");
 
-// Rest of your game code...
-
-console.log("DSRIdentificationGame component defined");
 const allTickets = [
   // Add your ticket data here
   // Example:
@@ -113,3 +110,5 @@ const DSRIdentificationGame = () => {
     )
   );
 };
+
+console.log("DSRIdentificationGame component defined");

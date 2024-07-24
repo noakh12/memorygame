@@ -1,65 +1,104 @@
-import React, { useState, useEffect } from 'react';
+const allTickets = [
+  // Add your ticket data here
+  // Example:
+  // { message: "Please delete all my data.", isDSR: true, explanation: "This is a deletion request." },
+  // { message: "How do I reset my password?", isDSR: false, explanation: "This is a general support question." },
+];
+
+const shuffleArray = (array) => {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+};
 
 const DSRIdentificationGame = () => {
-  const [currentTicket, setCurrentTicket] = useState(null);
-  const [correctAnswers, setCorrectAnswers] = useState(0);
-  const [gameOver, setGameOver] = useState(false);
-  const [showExplanation, setShowExplanation] = useState(false);
+  const [state, setState] = React.useState({
+    currentTicket: null,
+    correctAnswers: 0,
+    gameOver: false,
+    showExplanation: false,
+  });
 
-  useEffect(() => {
+  React.useEffect(() => {
     startGame();
   }, []);
 
   const startGame = () => {
     const shuffledTickets = shuffleArray([...allTickets]).slice(0, 10);
-    setCurrentTicket(shuffledTickets[0]);
-    setCorrectAnswers(0);
-    setGameOver(false);
+    setState({
+      currentTicket: shuffledTickets[0],
+      correctAnswers: 0,
+      gameOver: false,
+      showExplanation: false,
+    });
   };
 
   const handleAnswer = (isDSR) => {
-    if (isDSR === currentTicket.isDSR) {
-      setCorrectAnswers(prev => prev + 1);
+    if (isDSR === state.currentTicket.isDSR) {
+      setState(prev => ({ ...prev, correctAnswers: prev.correctAnswers + 1 }));
     }
-    setShowExplanation(true);
+    setState(prev => ({ ...prev, showExplanation: true }));
   };
 
   const nextTicket = () => {
-    const nextIndex = allTickets.indexOf(currentTicket) + 1;
+    const nextIndex = allTickets.indexOf(state.currentTicket) + 1;
     if (nextIndex < allTickets.length) {
-      setCurrentTicket(allTickets[nextIndex]);
-      setShowExplanation(false);
+      setState(prev => ({
+        ...prev,
+        currentTicket: allTickets[nextIndex],
+        showExplanation: false,
+      }));
     } else {
-      setGameOver(true);
+      setState(prev => ({ ...prev, gameOver: true }));
     }
   };
 
-  if (!currentTicket) return <div>Loading...</div>;
+  if (!state.currentTicket) return React.createElement('div', null, 'Loading...');
 
-  return (
-    <div>
-      <h1>DSR Identification Game</h1>
-      <div>
-        <p><strong>Support Ticket:</strong> {currentTicket.message}</p>
-        <button onClick={() => handleAnswer(true)} disabled={showExplanation || gameOver}>It's a DSR</button>
-        <button onClick={() => handleAnswer(false)} disabled={showExplanation || gameOver}>It's NOT a DSR</button>
-      </div>
-      {showExplanation && (
-        <div>
-          <p>{currentTicket.isDSR ? "Correct! This is a DSR." : "This is not a DSR."}</p>
-          <p>{currentTicket.explanation}</p>
-          <button onClick={nextTicket}>Next Ticket</button>
-        </div>
-      )}
-      {gameOver && (
-        <div>
-          <h2>Game Over!</h2>
-          <p>You got {correctAnswers} out of 10 correct.</p>
-          <button onClick={startGame}>Play Again</button>
-        </div>
-      )}
-    </div>
+  return React.createElement(
+    'div',
+    null,
+    React.createElement('h1', null, 'DSR Identification Game'),
+    React.createElement(
+      'div',
+      null,
+      React.createElement('p', null, 
+        React.createElement('strong', null, 'Support Ticket: '),
+        state.currentTicket.message
+      ),
+      React.createElement(
+        'button',
+        { 
+          onClick: () => handleAnswer(true),
+          disabled: state.showExplanation || state.gameOver
+        },
+        "It's a DSR"
+      ),
+      React.createElement(
+        'button',
+        { 
+          onClick: () => handleAnswer(false),
+          disabled: state.showExplanation || state.gameOver
+        },
+        "It's NOT a DSR"
+      )
+    ),
+    state.showExplanation && React.createElement(
+      'div',
+      null,
+      React.createElement('p', null, state.currentTicket.isDSR ? "Correct! This is a DSR." : "This is not a DSR."),
+      React.createElement('p', null, state.currentTicket.explanation),
+      React.createElement('button', { onClick: nextTicket }, "Next Ticket")
+    ),
+    state.gameOver && React.createElement(
+      'div',
+      null,
+      React.createElement('h2', null, 'Game Over!'),
+      React.createElement('p', null, `You got ${state.correctAnswers} out of 10 correct.`),
+      React.createElement('button', { onClick: startGame }, "Play Again")
+    )
   );
 };
-
-export default DSRIdentificationGame;

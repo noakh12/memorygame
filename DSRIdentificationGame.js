@@ -1,17 +1,59 @@
 console.log("DSRIdentificationGame.js starting to load");
 
 const allTickets = [
-    // Your ticket data here
+  {
+    message: "Hi, I can't access my account. Can you help me?",
+    isDSR: false,
+    explanation: "This is a common support request, not a DSR. The user is asking for help with account access, not specifically requesting their personal data."
+  },
+  {
+    message: "Please delete all my data. I'm not interested anymore.",
+    isDSR: true,
+    explanation: "This is a clear deletion request, which is a type of DSR. Good job! Don't forget to verify their identity before proceeding with the request."
+  },
+  {
+    message: "Can you send me all the information you have about me?",
+    isDSR: true,
+    explanation: "This is an access request, which is a type of DSR. The user is asking for all their personal data."
+  },
+  {
+    message: "I think my email address is wrong in your system. It should be johndoe@email.com.",
+    isDSR: true,
+    explanation: "This is a correction request, which is a type of DSR. The user is asking to update their personal information."
+  },
+  {
+    message: "I want to transfer my account to another service provider. Can you help with that?",
+    isDSR: true,
+    explanation: "This is a data portability request, which is a type of DSR. The user is asking to transfer their data to another provider."
+  },
+  {
+    message: "Can you tell me how you're using my data for marketing?",
+    isDSR: true,
+    explanation: "This is an information request about data processing, which falls under DSR. The user is asking about how their data is being used."
+  },
+  {
+    message: "I forgot my password. How do I reset it?",
+    isDSR: false,
+    explanation: "This is a standard support request for password reset, not a DSR. The user is not requesting access to their personal data or exercising other data subject rights."
+  },
+  {
+    message: "Can you stop sending me marketing emails?",
+    isDSR: false,
+    explanation: "While this involves personal data, it's typically handled as a marketing preference rather than a formal DSR. However, it's good practice to treat it with similar care."
+  },
+  {
+    message: "I want to know why I was denied a loan.",
+    isDSR: true,
+    explanation: "This could be considered a request for information about automated decision-making, which falls under DSR rights in some jurisdictions."
+  },
+  {
+    message: "How do I upgrade my subscription?",
+    isDSR: false,
+    explanation: "This is a general customer service inquiry about services, not a request related to personal data."
+  }
 ];
 
 console.log("allTickets defined:", allTickets.length, "tickets");
-
-const allTickets = [
-  // Add your ticket data here
-  // Example:
-  // { message: "Please delete all my data.", isDSR: true, explanation: "This is a deletion request." },
-  // { message: "How do I reset my password?", isDSR: false, explanation: "This is a general support question." },
-];
 
 const shuffleArray = (array) => {
   const shuffled = [...array];
@@ -28,6 +70,8 @@ const DSRIdentificationGame = () => {
     correctAnswers: 0,
     gameOver: false,
     showExplanation: false,
+    ticketIndex: 0,
+    tickets: []
   });
 
   React.useEffect(() => {
@@ -41,6 +85,8 @@ const DSRIdentificationGame = () => {
       correctAnswers: 0,
       gameOver: false,
       showExplanation: false,
+      ticketIndex: 0,
+      tickets: shuffledTickets
     });
   };
 
@@ -52,12 +98,13 @@ const DSRIdentificationGame = () => {
   };
 
   const nextTicket = () => {
-    const nextIndex = allTickets.indexOf(state.currentTicket) + 1;
-    if (nextIndex < allTickets.length) {
+    const nextIndex = state.ticketIndex + 1;
+    if (nextIndex < state.tickets.length) {
       setState(prev => ({
         ...prev,
-        currentTicket: allTickets[nextIndex],
+        currentTicket: prev.tickets[nextIndex],
         showExplanation: false,
+        ticketIndex: nextIndex
       }));
     } else {
       setState(prev => ({ ...prev, gameOver: true }));
@@ -68,20 +115,33 @@ const DSRIdentificationGame = () => {
 
   return React.createElement(
     'div',
-    null,
-    React.createElement('h1', null, 'DSR Identification Game'),
+    { style: { fontFamily: 'Arial, sans-serif', maxWidth: '600px', margin: '0 auto', padding: '20px' } },
+    React.createElement('h1', { style: { textAlign: 'center' } }, 'DSR Identification Game'),
     React.createElement(
       'div',
-      null,
-      React.createElement('p', null, 
+      { style: { backgroundColor: '#f0f0f0', padding: '20px', borderRadius: '10px', marginBottom: '20px' } },
+      React.createElement('p', { style: { fontSize: '18px' } }, 
         React.createElement('strong', null, 'Support Ticket: '),
         state.currentTicket.message
-      ),
+      )
+    ),
+    React.createElement(
+      'div',
+      { style: { display: 'flex', justifyContent: 'space-between', marginBottom: '20px' } },
       React.createElement(
         'button',
         { 
           onClick: () => handleAnswer(true),
-          disabled: state.showExplanation || state.gameOver
+          disabled: state.showExplanation || state.gameOver,
+          style: { 
+            backgroundColor: '#4CAF50', 
+            color: 'white', 
+            padding: '10px 20px', 
+            fontSize: '16px', 
+            border: 'none', 
+            borderRadius: '5px', 
+            cursor: 'pointer' 
+          }
         },
         "It's a DSR"
       ),
@@ -89,26 +149,75 @@ const DSRIdentificationGame = () => {
         'button',
         { 
           onClick: () => handleAnswer(false),
-          disabled: state.showExplanation || state.gameOver
+          disabled: state.showExplanation || state.gameOver,
+          style: { 
+            backgroundColor: '#f44336', 
+            color: 'white', 
+            padding: '10px 20px', 
+            fontSize: '16px', 
+            border: 'none', 
+            borderRadius: '5px', 
+            cursor: 'pointer' 
+          }
         },
         "It's NOT a DSR"
       )
     ),
     state.showExplanation && React.createElement(
       'div',
-      null,
-      React.createElement('p', null, state.currentTicket.isDSR ? "Correct! This is a DSR." : "This is not a DSR."),
+      { style: { backgroundColor: '#e7f3fe', padding: '15px', borderRadius: '5px', marginBottom: '20px' } },
+      React.createElement('p', null, 
+        React.createElement('strong', null, state.currentTicket.isDSR ? "Correct! This is a DSR." : "This is not a DSR.")
+      ),
       React.createElement('p', null, state.currentTicket.explanation),
-      React.createElement('button', { onClick: nextTicket }, "Next Ticket")
+      React.createElement(
+        'button',
+        { 
+          onClick: nextTicket,
+          style: { 
+            backgroundColor: '#008CBA', 
+            color: 'white', 
+            padding: '10px 20px', 
+            fontSize: '16px', 
+            border: 'none', 
+            borderRadius: '5px', 
+            cursor: 'pointer',
+            marginTop: '10px'
+          }
+        },
+        "Next Ticket"
+      )
     ),
     state.gameOver && React.createElement(
       'div',
-      null,
+      { style: { textAlign: 'center' } },
       React.createElement('h2', null, 'Game Over!'),
       React.createElement('p', null, `You got ${state.correctAnswers} out of 10 correct.`),
-      React.createElement('button', { onClick: startGame }, "Play Again")
+      React.createElement(
+        'button',
+        { 
+          onClick: startGame,
+          style: { 
+            backgroundColor: '#4CAF50', 
+            color: 'white', 
+            padding: '10px 20px', 
+            fontSize: '16px', 
+            border: 'none', 
+            borderRadius: '5px', 
+            cursor: 'pointer' 
+          }
+        },
+        "Play Again"
+      )
+    ),
+    !state.gameOver && React.createElement(
+      'div',
+      { style: { textAlign: 'center', marginTop: '20px' } },
+      React.createElement('p', null, `Correct Answers: ${state.correctAnswers} / 10`)
     )
   );
 };
 
 console.log("DSRIdentificationGame component defined");
+
+window.DSRIdentificationGame = DSRIdentificationGame;

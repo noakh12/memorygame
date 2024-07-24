@@ -1,3 +1,6 @@
+const React = window.React;
+const ReactDOM = window.ReactDOM;
+
 console.log("DSRIdentificationGame.js starting to load");
 
 const allTickets = [

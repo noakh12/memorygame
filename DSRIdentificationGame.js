@@ -1,75 +1,65 @@
-const allTickets = [
-  {
-    message: "Hi, I can't access my account. Can you help me?",
-    isDSR: false,
-    explanation: "This is a common support request, not a DSR. The user is asking for help with account access, not specifically requesting their personal data."
-  },
-  {
-    message: "Please delete all my data. I'm not interested anymore.",
-    isDSR: true,
-    explanation: "This is a clear deletion request, which is a type of DSR. Good job! Don't forget to verify their identity before proceeding with the request."
-  },
-  // ... (copy all the other tickets from your original React component)
-];
+import React, { useState, useEffect } from 'react';
 
-let currentTickets, currentTicketIndex, correctAnswers;
+const DSRIdentificationGame = () => {
+  const [currentTicket, setCurrentTicket] = useState(null);
+  const [correctAnswers, setCorrectAnswers] = useState(0);
+  const [gameOver, setGameOver] = useState(false);
+  const [showExplanation, setShowExplanation] = useState(false);
 
-function startGame() {
-  currentTickets = shuffleArray([...allTickets]).slice(0, 10);
-  currentTicketIndex = 0;
-  correctAnswers = 0;
-  showNextTicket();
-}
+  useEffect(() => {
+    startGame();
+  }, []);
 
-function shuffleArray(array) {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
-  return array;
-}
+  const startGame = () => {
+    const shuffledTickets = shuffleArray([...allTickets]).slice(0, 10);
+    setCurrentTicket(shuffledTickets[0]);
+    setCorrectAnswers(0);
+    setGameOver(false);
+  };
 
-function showNextTicket() {
-  if (currentTicketIndex >= currentTickets.length) {
-    endGame();
-    return;
-  }
-  
-  const ticket = currentTickets[currentTicketIndex];
-  document.getElementById('ticket-message').textContent = ticket.message;
-  document.getElementById('explanation').style.display = 'none';
-  document.getElementById('dsr-button').disabled = false;
-  document.getElementById('not-dsr-button').disabled = false;
-  document.getElementById('next-button').style.display = 'none';
-}
+  const handleAnswer = (isDSR) => {
+    if (isDSR === currentTicket.isDSR) {
+      setCorrectAnswers(prev => prev + 1);
+    }
+    setShowExplanation(true);
+  };
 
-function handleAnswer(isDSR) {
-  const ticket = currentTickets[currentTicketIndex];
-  const isCorrect = isDSR === ticket.isDSR;
-  
-  if (isCorrect) correctAnswers++;
-  
-  document.getElementById('explanation').textContent = 
-    (isCorrect ? "Correct! " : "Incorrect. ") + ticket.explanation;
-  document.getElementById('explanation').style.display = 'block';
-  document.getElementById('dsr-button').disabled = true;
-  document.getElementById('not-dsr-button').disabled = true;
-  
-  currentTicketIndex++;
-  
-  if (currentTicketIndex < currentTickets.length) {
-    document.getElementById('next-button').style.display = 'block';
-  } else {
-    endGame();
-  }
-}
+  const nextTicket = () => {
+    const nextIndex = allTickets.indexOf(currentTicket) + 1;
+    if (nextIndex < allTickets.length) {
+      setCurrentTicket(allTickets[nextIndex]);
+      setShowExplanation(false);
+    } else {
+      setGameOver(true);
+    }
+  };
 
-function endGame() {
-  document.getElementById('game-container').innerHTML = `
-    <h2>Game Over!</h2>
-    <p>You got ${correctAnswers} out of ${currentTickets.length} correct.</p>
-    <button onclick="startGame()">Play Again</button>
-  `;
-}
+  if (!currentTicket) return <div>Loading...</div>;
 
-window.onload = startGame;
+  return (
+    <div>
+      <h1>DSR Identification Game</h1>
+      <div>
+        <p><strong>Support Ticket:</strong> {currentTicket.message}</p>
+        <button onClick={() => handleAnswer(true)} disabled={showExplanation || gameOver}>It's a DSR</button>
+        <button onClick={() => handleAnswer(false)} disabled={showExplanation || gameOver}>It's NOT a DSR</button>
+      </div>
+      {showExplanation && (
+        <div>
+          <p>{currentTicket.isDSR ? "Correct! This is a DSR." : "This is not a DSR."}</p>
+          <p>{currentTicket.explanation}</p>
+          <button onClick={nextTicket}>Next Ticket</button>
+        </div>
+      )}
+      {gameOver && (
+        <div>
+          <h2>Game Over!</h2>
+          <p>You got {correctAnswers} out of 10 correct.</p>
+          <button onClick={startGame}>Play Again</button>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default DSRIdentificationGame;

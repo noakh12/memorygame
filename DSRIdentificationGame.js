@@ -1,3 +1,14 @@
+console.log("DSRIdentificationGame.js starting to load");
+
+const allTickets = [
+    // Your ticket data here
+];
+
+console.log("allTickets defined:", allTickets.length, "tickets");
+
+// Rest of your game code...
+
+console.log("DSRIdentificationGame component defined");
 const allTickets = [
   // Add your ticket data here
   // Example:

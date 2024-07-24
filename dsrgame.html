@@ -8,10 +8,20 @@
     <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
 </head>
 <body>
-    <div id="root"></div>
+    <div id="root">If you see this, React hasn't rendered anything yet.</div>
+    <script>
+        console.log("Starting to load game script");
+    </script>
     <script src="DSRIdentificationGame.js"></script>
     <script>
-        ReactDOM.render(React.createElement(DSRIdentificationGame), document.getElementById('root'));
+        console.log("Game script loaded, attempting to render");
+        try {
+            ReactDOM.render(React.createElement(DSRIdentificationGame), document.getElementById('root'));
+            console.log("Render completed without errors");
+        } catch (error) {
+            console.error("Error rendering game:", error);
+            document.getElementById('root').innerHTML = "An error occurred while loading the game. Please check the console for details.";
+        }
     </script>
 </body>
 </html>

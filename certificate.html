@@ -4,7 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Game Completion Certificate</title>
+    <!-- Add Open Graph meta tags for better LinkedIn sharing -->
+    <meta property="og:title" content="HR Privacy Awareness Game Certificate">
+    <meta property="og:description" content="I've completed the HR Privacy Awareness Game by Hoggo!">
+    <meta property="og:image" content="https://i.postimg.cc/RZdgcRR6/favicon.png">
+    <meta property="og:url" content="https://yourdomain.com/certificate.html">
     <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
         .certificate {
             background-color: #1e6f5c;
             color: white;
@@ -15,6 +30,7 @@
             text-align: center;
             font-family: Arial, sans-serif;
             margin: 20px auto;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
         .icon {
             width: 40px;
@@ -34,6 +50,26 @@
             font-size: 16px;
             margin: 5px 0;
         }
+        button {
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            opacity: 0.9;
+        }
+        .print-button {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .share-button {
+            background-color: #0077B5;
+            color: white;
+        }
         @media print {
             body * {
                 visibility: hidden;
@@ -43,21 +79,23 @@
             }
             .certificate {
                 position: absolute;
-                left: 0;
-                top: 0;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
             }
         }
     </style>
 </head>
 <body>
     <div class="certificate">
-        <img src="https://i.postimg.cc/d3gwLrBw/favicon.png" alt="hoggo games icon" class="icon">
+        <img src="https://i.postimg.cc/d3gwLrBw/favicon.png" alt="hoggo icon" class="icon">
         <h1>The very awesome:</h1>
         <h2 class="player-name"></h2>
         <p>Has won hoggo's</p>
         <p><span id="game-type"></span> awareness game for HR!</p>
     </div>
-    <button onclick="window.print()">Print Certificate</button>
+    <button class="print-button" onclick="window.print()">Print Certificate</button>
+    <button class="share-button" onclick="shareOnLinkedIn()">Share on LinkedIn</button>
 
     <script>
         function updateCertificate() {
@@ -67,7 +105,23 @@
             
             document.querySelector('.player-name').textContent = playerName || 'Player';
             document.getElementById('game-type').textContent = gameType || 'privacy';
+            
+            // Update Open Graph meta tags
+            document.querySelector('meta[property="og:title"]').setAttribute('content', `${playerName}'s HR Privacy Awareness Game Certificate`);
+            document.querySelector('meta[property="og:description"]').setAttribute('content', `${playerName} has completed the ${gameType} awareness game for HR by Hoggo!`);
         }
+
+        function shareOnLinkedIn() {
+            const playerName = document.querySelector('.player-name').textContent;
+            const gameType = document.getElementById('game-type').textContent;
+            const shareUrl = encodeURIComponent(window.location.href);
+            const title = encodeURIComponent(`I've completed the ${gameType} awareness game for HR!`);
+            const summary = encodeURIComponent(`Check out my certificate for completing Hoggo's ${gameType} awareness game for HR professionals.`);
+
+            const linkedInShareUrl = `https://www.linkedin.com/shareArticle?mini=true&url=${shareUrl}&title=${title}&summary=${summary}`;
+            window.open(linkedInShareUrl, '_blank');
+        }
+
         updateCertificate();
     </script>
 </body>

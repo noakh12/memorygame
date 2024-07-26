@@ -74,7 +74,8 @@ const DSRIdentificationGame = () => {
     gameOver: false,
     showExplanation: false,
     ticketIndex: 0,
-    tickets: []
+    tickets: [],
+    lastAnswerCorrect: false
   });
 
   React.useEffect(() => {
@@ -89,15 +90,19 @@ const DSRIdentificationGame = () => {
       gameOver: false,
       showExplanation: false,
       ticketIndex: 0,
-      tickets: shuffledTickets
+      tickets: shuffledTickets,
+      lastAnswerCorrect: false
     });
   };
 
   const handleAnswer = (isDSR) => {
-    if (isDSR === state.currentTicket.isDSR) {
-      setState(prev => ({ ...prev, correctAnswers: prev.correctAnswers + 1 }));
-    }
-    setState(prev => ({ ...prev, showExplanation: true }));
+    const isCorrect = isDSR === state.currentTicket.isDSR;
+    setState(prev => ({ 
+      ...prev, 
+      correctAnswers: isCorrect ? prev.correctAnswers + 1 : prev.correctAnswers,
+      showExplanation: true,
+      lastAnswerCorrect: isCorrect
+    }));
   };
 
   const nextTicket = () => {
@@ -107,7 +112,8 @@ const DSRIdentificationGame = () => {
         ...prev,
         currentTicket: prev.tickets[nextIndex],
         showExplanation: false,
-        ticketIndex: nextIndex
+        ticketIndex: nextIndex,
+        lastAnswerCorrect: false
       }));
     } else {
       setState(prev => ({ ...prev, gameOver: true }));
@@ -170,7 +176,7 @@ const DSRIdentificationGame = () => {
       'div',
       { style: { backgroundColor: '#e7f3fe', padding: '15px', borderRadius: '5px', marginBottom: '20px' } },
       React.createElement('p', null, 
-        React.createElement('strong', null, state.currentTicket.isDSR ? "Correct! This is a DSR." : "This is not a DSR.")
+        React.createElement('strong', null, state.lastAnswerCorrect ? "Correct!" : "Incorrect.")
       ),
       React.createElement('p', null, state.currentTicket.explanation),
       React.createElement(

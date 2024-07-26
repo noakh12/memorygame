@@ -6,8 +6,8 @@
     <title>Game Completion Certificate</title>
     <!-- Add Open Graph meta tags for better LinkedIn sharing -->
     <meta property="og:title" content="HR Privacy Awareness Game Certificate">
-    <meta property="og:description" content="I've completed the HR Privacy Awareness Game by Hoggo!">
-    <meta property="og:image" content="https://i.postimg.cc/RZdgcRR6/favicon.png">
+    <meta property="og:description" content="I've completed the HR Privacy Awareness Game by hoggo!">
+    <meta property="og:image" content="https://i.postimg.cc/RV6F50Pm/iwon.png">
     <meta property="og:url" content="https://privacygames.online/certificate.html">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -37,6 +37,7 @@
             flex-direction: column;
             justify-content: center;
             box-sizing: border-box;
+            position: relative;
         }
         .icon {
             width: 80px;
@@ -56,6 +57,12 @@
         p {
             font-size: 32px;
             margin: 10px 0;
+        }
+        .date {
+            font-size: 24px;
+            position: absolute;
+            bottom: 20px;
+            right: 40px;
         }
         button {
             margin: 10px;
@@ -86,6 +93,7 @@
         <h2 class="player-name"></h2>
         <p>Has won hoggo's</p>
         <p><span id="game-type"></span> awareness game!</p>
+        <div class="date"></div>
     </div>
     <button class="pdf-button" onclick="generatePDF()">Generate PDF</button>
     <button class="share-button" onclick="shareOnLinkedIn()">Share on LinkedIn</button>
@@ -99,31 +107,53 @@
             document.querySelector('.player-name').textContent = playerName;
             document.getElementById('game-type').textContent = gameType;
             
+            // Add date
+            const currentDate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+            document.querySelector('.date').textContent = currentDate;
+            
             // Update Open Graph meta tags
             document.querySelector('meta[property="og:title"]').setAttribute('content', `${playerName}'s HR Privacy Awareness Game Certificate`);
             document.querySelector('meta[property="og:description"]').setAttribute('content', `${playerName} has completed the ${gameType} awareness game by hoggo!`);
         }
 
         function generatePDF() {
-            html2canvas(document.getElementById('certificate')).then(canvas => {
-                const imgData = canvas.toDataURL('image/png');
-                const { jsPDF } = window.jspdf;
-                const pdf = new jsPDF({
-                    orientation: 'landscape',
-                    unit: 'px',
-                    format: [1200, 600]
+            const certificateElement = document.getElementById('certificate');
+            const iconElement = certificateElement.querySelector('.icon');
+            const originalSrc = iconElement.src;
+            
+            // Convert icon to base64 to ensure it appears in the PDF
+            fetch(originalSrc)
+                .then(response => response.blob())
+                .then(blob => {
+                    const reader = new FileReader();
+                    reader.onload = function() {
+                        iconElement.src = reader.result;
+                        
+                        html2canvas(certificateElement, { useCORS: true }).then(canvas => {
+                            const imgData = canvas.toDataURL('image/png');
+                            const { jsPDF } = window.jspdf;
+                            const pdf = new jsPDF({
+                                orientation: 'landscape',
+                                unit: 'px',
+                                format: [1200, 600]
+                            });
+                            pdf.addImage(imgData, 'PNG', 0, 0, 1200, 600);
+                            pdf.save("certificate.pdf");
+                            
+                            // Reset the icon src to the original
+                            iconElement.src = originalSrc;
+                        });
+                    };
+                    reader.readAsDataURL(blob);
                 });
-                pdf.addImage(imgData, 'PNG', 0, 0, 1200, 600);
-                pdf.save("certificate.pdf");
-            });
         }
 
         function shareOnLinkedIn() {
             const playerName = document.querySelector('.player-name').textContent;
             const gameType = document.getElementById('game-type').textContent;
-            const title = encodeURIComponent(`I've completed the ${gameType} awareness game!`);
+            const title = encodeURIComponent(`I've completed the ${gameType}!`);
             const summary = encodeURIComponent(`${playerName} has completed hoggo's ${gameType}!`);
-            const imageUrl = encodeURIComponent('https://i.postimg.cc/RV6F50Pm/iwon.png');
+            const imageUrl = encodeURIComponent('https://privacygames.online/certificate.png');
             const linkedInShareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}&title=${title}&summary=${summary}&source=${imageUrl}`;
             window.open(linkedInShareUrl, '_blank');
         }

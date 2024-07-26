@@ -151,7 +151,8 @@ function showCertificateForm() {
 
 function generateCertificate() {
     const playerName = document.getElementById('player-name').value;
-    window.open(`certificate.html?name=${encodeURIComponent(playerName)}&game=HR`, '_blank');
+    const uniqueId = Date.now(); // This creates a unique timestamp
+    window.open(`certificate.html?name=${encodeURIComponent(playerName)}&game=HR&id=${uniqueId}`, '_blank');
 }
 </script>
     <div style="margin-top: 20px; text-align: center;">

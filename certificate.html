@@ -69,7 +69,7 @@
         button:hover {
             opacity: 0.9;
         }
-        .print-button {
+        .pdf-button {
             background-color: #4CAF50;
             color: white;
         }
@@ -77,31 +77,17 @@
             background-color: #0077B5;
             color: white;
         }
-        @media print {
-            body * {
-                visibility: hidden;
-            }
-            .certificate, .certificate * {
-                visibility: visible;
-            }
-            .certificate {
-                position: absolute;
-                left: 50%;
-                top: 50%;
-                transform: translate(-50%, -50%);
-            }
-        }
     </style>
 </head>
 <body>
     <div class="certificate" id="certificate">
-        <img src="https://i.postimg.cc/d3gwLrBw/favicon.png" alt="Hoggo icon" class="icon">
+        <img src="https://i.postimg.cc/MKMzh60V/Iconic-Mark-White.png" alt="Hoggo icon" class="icon">
         <h1>The very awesome:</h1>
         <h2 class="player-name"></h2>
         <p>Has won hoggo's</p>
         <p><span id="game-type"></span> awareness game for HR!</p>
     </div>
-    <button class="print-button" onclick="generatePDF()">Generate PDF</button>
+    <button class="pdf-button" onclick="generatePDF()">Generate PDF</button>
     <button class="share-button" onclick="shareOnLinkedIn()">Share on LinkedIn</button>
 
     <script>
@@ -115,7 +101,7 @@
             
             // Update Open Graph meta tags
             document.querySelector('meta[property="og:title"]').setAttribute('content', `${playerName}'s HR Privacy Awareness Game Certificate`);
-            document.querySelector('meta[property="og:description"]').setAttribute('content', `${playerName} has completed the ${gameType} awareness game for HR by Hoggo!`);
+            document.querySelector('meta[property="og:description"]').setAttribute('content', `${playerName} has completed the ${gameType} awareness game by hoggo!`);
         }
 
         function generatePDF() {
@@ -132,14 +118,28 @@
         }
 
         function shareOnLinkedIn() {
-            generatePDF();
-            const playerName = document.querySelector('.player-name').textContent;
-            const gameType = document.getElementById('game-type').textContent;
-            const title = encodeURIComponent(`I've completed the ${gameType} awareness game for HR!`);
-            const summary = encodeURIComponent(`Check out my certificate for completing Hoggo's ${gameType} awareness game for HR professionals.`);
+            html2canvas(document.getElementById('certificate')).then(canvas => {
+                canvas.toBlob(function(blob) {
+                    const formData = new FormData();
+                    formData.append('image', blob, 'certificate.png');
 
-            const linkedInShareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}&title=${title}&summary=${summary}`;
-            window.open(linkedInShareUrl, '_blank');
+                    fetch('/upload-certificate', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        const imageUrl = data.imageUrl;
+                        const playerName = document.querySelector('.player-name').textContent;
+                        const gameType = document.getElementById('game-type').textContent;
+                        const title = encodeURIComponent(`I've completed the ${gameType} awareness game for HR!`);
+                        const summary = encodeURIComponent(`Check out my certificate for completing hoggo's ${gameType} awareness game.`);
+                        const linkedInShareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}&title=${title}&summary=${summary}&source=${encodeURIComponent(imageUrl)}`;
+                        window.open(linkedInShareUrl, '_blank');
+                    })
+                    .catch(error => console.error('Error:', error));
+                }, 'image/png');
+            });
         }
 
         updateCertificate();

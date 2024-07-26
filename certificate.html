@@ -85,7 +85,7 @@
         <h1>The very awesome:</h1>
         <h2 class="player-name"></h2>
         <p>Has won hoggo's</p>
-        <p><span id="game-type"></span> awareness game for HR!</p>
+        <p><span id="game-type"></span> awareness game!</p>
     </div>
     <button class="pdf-button" onclick="generatePDF()">Generate PDF</button>
     <button class="share-button" onclick="shareOnLinkedIn()">Share on LinkedIn</button>
@@ -121,8 +121,8 @@
         function shareOnLinkedIn() {
             const playerName = document.querySelector('.player-name').textContent;
             const gameType = document.getElementById('game-type').textContent;
-            const title = encodeURIComponent(`I've completed the ${gameType} awareness game for HR!`);
-            const summary = encodeURIComponent(`${playerName} has completed Hoggo's ${gameType} awareness game for HR professionals.`);
+            const title = encodeURIComponent(`I've completed the ${gameType} awareness game!`);
+            const summary = encodeURIComponent(`${playerName} has completed hoggo's ${gameType}!`);
             const imageUrl = encodeURIComponent('https://i.postimg.cc/RV6F50Pm/iwon.png');
             const linkedInShareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}&title=${title}&summary=${summary}&source=${imageUrl}`;
             window.open(linkedInShareUrl, '_blank');

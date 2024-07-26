@@ -9,7 +9,7 @@
     <meta property="og:description" content="I've completed the HR Privacy Awareness Game by Hoggo!">
     <meta property="og:image" content="https://i.postimg.cc/RZdgcRR6/favicon.png">
     <meta property="og:url" content="https://privacygames.online/certificate.html">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.5.0-beta4/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         body {
@@ -93,11 +93,11 @@
     <script>
         function updateCertificate() {
             const urlParams = new URLSearchParams(window.location.search);
-            const playerName = urlParams.get('name');
-            const gameType = urlParams.get('game');
+            const playerName = decodeURIComponent(urlParams.get('name') || 'Player');
+            const gameType = urlParams.get('game') || 'privacy';
             
-            document.querySelector('.player-name').textContent = playerName || 'Player';
-            document.getElementById('game-type').textContent = gameType || 'privacy';
+            document.querySelector('.player-name').textContent = playerName;
+            document.getElementById('game-type').textContent = gameType;
             
             // Update Open Graph meta tags
             document.querySelector('meta[property="og:title"]').setAttribute('content', `${playerName}'s HR Privacy Awareness Game Certificate`);
@@ -107,7 +107,8 @@
         function generatePDF() {
             html2canvas(document.getElementById('certificate')).then(canvas => {
                 const imgData = canvas.toDataURL('image/png');
-                const pdf = new jspdf.jsPDF({
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF({
                     orientation: 'landscape',
                     unit: 'px',
                     format: [1200, 600]
@@ -117,15 +118,14 @@
             });
         }
 
-function shareOnLinkedIn() {
-    const playerName = document.querySelector('.player-name').textContent;
-    const gameType = document.getElementById('game-type').textContent;
-    const title = encodeURIComponent(`I've completed the ${gameType} awareness game for HR!`);
-    const summary = encodeURIComponent(`${playerName} has completed Hoggo's ${gameType} awareness game for HR professionals.`);
-    const imageUrl = encodeURIComponent('https://privacygames.online/certificate.png');
-    const linkedInShareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}&title=${title}&summary=${summary}&source=${imageUrl}`;
-    window.open(linkedInShareUrl, '_blank');
-}
+        function shareOnLinkedIn() {
+            const playerName = document.querySelector('.player-name').textContent;
+            const gameType = document.getElementById('game-type').textContent;
+            const title = encodeURIComponent(`I've completed the ${gameType} awareness game for HR!`);
+            const summary = encodeURIComponent(`${playerName} has completed Hoggo's ${gameType} awareness game for HR professionals.`);
+            const imageUrl = encodeURIComponent('https://i.postimg.cc/RV6F50Pm/iwon.png');
+            const linkedInShareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}&title=${title}&summary=${summary}&source=${imageUrl}`;
+            window.open(linkedInShareUrl, '_blank');
         }
 
         updateCertificate();

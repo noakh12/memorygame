@@ -23,5 +23,21 @@
             document.getElementById('root').innerHTML = "An error occurred while loading the game. Please check the console for details.";
         }
     </script>
+    <div id="certificate-form" style="display: none; text-align: center; margin-top: 20px;">
+    <h2>Congratulations! You've completed the game.</h2>
+    <input type="text" id="player-name" placeholder="Enter your name" style="margin: 10px; padding: 5px;">
+    <button onclick="generateCertificate()">Get Certificate</button>
+</div>
+
+<script>
+function showCertificateForm() {
+    document.getElementById('certificate-form').style.display = 'block';
+}
+
+function generateCertificate() {
+    const playerName = document.getElementById('player-name').value;
+    window.open(`certificate.html?name=${encodeURIComponent(playerName)}&game=DSR`, '_blank');
+}
+</script>
 </body>
 </html>

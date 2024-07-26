@@ -75,7 +75,9 @@ const DSRIdentificationGame = () => {
     showExplanation: false,
     ticketIndex: 0,
     tickets: [],
-    lastAnswerCorrect: false
+    lastAnswerCorrect: false,
+    showCertificateForm: false,
+    playerName: ''
   });
 
   React.useEffect(() => {
@@ -91,7 +93,9 @@ const DSRIdentificationGame = () => {
       showExplanation: false,
       ticketIndex: 0,
       tickets: shuffledTickets,
-      lastAnswerCorrect: false
+      lastAnswerCorrect: false,
+      showCertificateForm: false,
+      playerName: ''
     });
   };
 
@@ -116,8 +120,21 @@ const DSRIdentificationGame = () => {
         lastAnswerCorrect: false
       }));
     } else {
-      setState(prev => ({ ...prev, gameOver: true }));
+      setState(prev => ({ ...prev, gameOver: true, showCertificateForm: true }));
     }
+  };
+
+  const handleNameChange = (event) => {
+    setState(prev => ({ ...prev, playerName: event.target.value }));
+  };
+
+  const generateCertificate = () => {
+    const playerName = state.playerName || 'Player';
+    const score = state.correctAnswers;
+    const gameType = 'Customer Support';
+    const uniqueId = Date.now();
+    const certificateUrl = `certificate.html?name=${encodeURIComponent(playerName)}&game=${encodeURIComponent(gameType)}&score=${score}&id=${uniqueId}`;
+    window.open(certificateUrl, '_blank');
   };
 
   if (!state.currentTicket) return React.createElement('div', null, 'Loading...');
@@ -126,103 +143,141 @@ const DSRIdentificationGame = () => {
     'div',
     { style: { fontFamily: 'Arial, sans-serif', maxWidth: '600px', margin: '0 auto', padding: '20px' } },
     React.createElement('h1', { style: { textAlign: 'center' } }, 'DSR Identification Game'),
-    React.createElement(
-      'div',
-      { style: { backgroundColor: '#f0f0f0', padding: '20px', borderRadius: '10px', marginBottom: '20px' } },
-      React.createElement('p', { style: { fontSize: '18px' } }, 
-        React.createElement('strong', null, 'Support Ticket: '),
-        state.currentTicket.message
-      )
-    ),
-    React.createElement(
-      'div',
-      { style: { display: 'flex', justifyContent: 'space-between', marginBottom: '20px' } },
+    !state.gameOver ? (
       React.createElement(
-        'button',
-        { 
-          onClick: () => handleAnswer(true),
-          disabled: state.showExplanation || state.gameOver,
-          style: { 
-            backgroundColor: '#4CAF50', 
-            color: 'white', 
-            padding: '10px 20px', 
-            fontSize: '16px', 
-            border: 'none', 
-            borderRadius: '5px', 
-            cursor: 'pointer' 
-          }
-        },
-        "It's a DSR"
-      ),
-      React.createElement(
-        'button',
-        { 
-          onClick: () => handleAnswer(false),
-          disabled: state.showExplanation || state.gameOver,
-          style: { 
-            backgroundColor: '#f44336', 
-            color: 'white', 
-            padding: '10px 20px', 
-            fontSize: '16px', 
-            border: 'none', 
-            borderRadius: '5px', 
-            cursor: 'pointer' 
-          }
-        },
-        "It's NOT a DSR"
+        React.Fragment,
+        null,
+        React.createElement(
+          'div',
+          { style: { backgroundColor: '#f0f0f0', padding: '20px', borderRadius: '10px', marginBottom: '20px' } },
+          React.createElement('p', { style: { fontSize: '18px' } }, 
+            React.createElement('strong', null, 'Support Ticket: '),
+            state.currentTicket.message
+          )
+        ),
+        React.createElement(
+          'div',
+          { style: { display: 'flex', justifyContent: 'space-between', marginBottom: '20px' } },
+          React.createElement(
+            'button',
+            { 
+              onClick: () => handleAnswer(true),
+              disabled: state.showExplanation,
+              style: { 
+                backgroundColor: '#4CAF50', 
+                color: 'white', 
+                padding: '10px 20px', 
+                fontSize: '16px', 
+                border: 'none', 
+                borderRadius: '5px', 
+                cursor: 'pointer' 
+              }
+            },
+            "It's a DSR"
+          ),
+          React.createElement(
+            'button',
+            { 
+              onClick: () => handleAnswer(false),
+              disabled: state.showExplanation,
+              style: { 
+                backgroundColor: '#f44336', 
+                color: 'white', 
+                padding: '10px 20px', 
+                fontSize: '16px', 
+                border: 'none', 
+                borderRadius: '5px', 
+                cursor: 'pointer' 
+              }
+            },
+            "It's NOT a DSR"
+          )
+        ),
+        state.showExplanation && React.createElement(
+          'div',
+          { style: { backgroundColor: '#e7f3fe', padding: '15px', borderRadius: '5px', marginBottom: '20px' } },
+          React.createElement('p', null, 
+            React.createElement('strong', null, state.lastAnswerCorrect ? "Correct!" : "Incorrect.")
+          ),
+          React.createElement('p', null, state.currentTicket.explanation),
+          React.createElement(
+            'button',
+            { 
+              onClick: nextTicket,
+              style: { 
+                backgroundColor: '#008CBA', 
+                color: 'white', 
+                padding: '10px 20px', 
+                fontSize: '16px', 
+                border: 'none', 
+                borderRadius: '5px', 
+                cursor: 'pointer',
+                marginTop: '10px'
+              }
+            },
+            "Next Ticket"
+          )
+        ),
+        React.createElement(
+          'div',
+          { style: { textAlign: 'center', marginTop: '20px' } },
+          React.createElement('p', null, `Correct Answers: ${state.correctAnswers} / 10`)
+        )
       )
-    ),
-    state.showExplanation && React.createElement(
-      'div',
-      { style: { backgroundColor: '#e7f3fe', padding: '15px', borderRadius: '5px', marginBottom: '20px' } },
-      React.createElement('p', null, 
-        React.createElement('strong', null, state.lastAnswerCorrect ? "Correct!" : "Incorrect.")
-      ),
-      React.createElement('p', null, state.currentTicket.explanation),
+    ) : (
       React.createElement(
-        'button',
-        { 
-          onClick: nextTicket,
-          style: { 
-            backgroundColor: '#008CBA', 
-            color: 'white', 
-            padding: '10px 20px', 
-            fontSize: '16px', 
-            border: 'none', 
-            borderRadius: '5px', 
-            cursor: 'pointer',
-            marginTop: '10px'
-          }
-        },
-        "Next Ticket"
+        'div',
+        { style: { textAlign: 'center' } },
+        React.createElement('h2', null, 'Game Over!'),
+        React.createElement('p', null, `You got ${state.correctAnswers} out of 10 correct.`),
+        state.showCertificateForm ? (
+          React.createElement(
+            'div',
+            null,
+            React.createElement('p', null, "Enter your name to generate a certificate:"),
+            React.createElement('input', {
+              type: 'text',
+              value: state.playerName,
+              onChange: handleNameChange,
+              style: { padding: '5px', marginRight: '10px' }
+            }),
+            React.createElement(
+              'button',
+              {
+                onClick: generateCertificate,
+                style: {
+                  backgroundColor: '#4CAF50',
+                  color: 'white',
+                  padding: '10px 20px',
+                  fontSize: '16px',
+                  border: 'none',
+                  borderRadius: '5px',
+                  cursor: 'pointer',
+                  marginTop: '10px'
+                }
+              },
+              "Generate Certificate"
+            )
+          )
+        ) : null,
+        React.createElement(
+          'button',
+          { 
+            onClick: startGame,
+            style: { 
+              backgroundColor: '#4CAF50', 
+              color: 'white', 
+              padding: '10px 20px', 
+              fontSize: '16px', 
+              border: 'none', 
+              borderRadius: '5px', 
+              cursor: 'pointer',
+              marginTop: '20px'
+            }
+          },
+          "Play Again"
+        )
       )
-    ),
-    state.gameOver && React.createElement(
-      'div',
-      { style: { textAlign: 'center' } },
-      React.createElement('h2', null, 'Game Over!'),
-      React.createElement('p', null, `You got ${state.correctAnswers} out of 10 correct.`),
-      React.createElement(
-        'button',
-        { 
-          onClick: startGame,
-          style: { 
-            backgroundColor: '#4CAF50', 
-            color: 'white', 
-            padding: '10px 20px', 
-            fontSize: '16px', 
-            border: 'none', 
-            borderRadius: '5px', 
-            cursor: 'pointer' 
-          }
-        },
-        "Play Again"
-      )
-    ),
-    !state.gameOver && React.createElement(
-      'div',
-      { style: { textAlign: 'center', marginTop: '20px' } },
-      React.createElement('p', null, `Correct Answers: ${state.correctAnswers} / 10`)
     )
   );
 };

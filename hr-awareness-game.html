@@ -130,8 +130,9 @@
                 card1.classList.add('matched');
                 card2.classList.add('matched');
                 matchedPairs.push(card1, card2);
-                if (matchedPairs.length === cardPairs.length * 2) {
-                    document.getElementById('game-complete').style.display = 'block';
+            if (matchedPairs.length === cardPairs.length * 2) {
+               document.getElementById('game-complete').style.display = 'block';
+               showCertificateForm();
                 }
             } else {
                 card1.classList.remove('flipped', 'action', 'risk');
@@ -143,5 +144,21 @@
 
         shuffleCards();
     </script>
+    <div id="certificate-form" style="display: none; text-align: center; margin-top: 20px;">
+    <h2>Congratulations! You've completed the game.</h2>
+    <input type="text" id="player-name" placeholder="Enter your name" style="margin: 10px; padding: 5px;">
+    <button onclick="generateCertificate()">Get Certificate</button>
+</div>
+
+<script>
+function showCertificateForm() {
+    document.getElementById('certificate-form').style.display = 'block';
+}
+
+function generateCertificate() {
+    const playerName = document.getElementById('player-name').value;
+    window.open(`certificate.html?name=${encodeURIComponent(playerName)}&game=HR`, '_blank');
+}
+</script>
 </body>
 </html>

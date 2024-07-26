@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Completion Certificate</title>
+    <style>
+        .certificate {
+            background-color: #1e6f5c;
+            color: white;
+            width: 300px;
+            height: 200px;
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+            font-family: Arial, sans-serif;
+            margin: 20px auto;
+        }
+        .icon {
+            width: 40px;
+            height: 40px;
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        .player-name {
+            font-size: 20px;
+            border-bottom: 2px solid white;
+            padding-bottom: 5px;
+            margin-bottom: 10px;
+        }
+        p {
+            font-size: 16px;
+            margin: 5px 0;
+        }
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            .certificate, .certificate * {
+                visibility: visible;
+            }
+            .certificate {
+                position: absolute;
+                left: 0;
+                top: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="certificate">
+        <img src="https://i.postimg.cc/RZdgcRR6/favicon.png" alt="Hoggo icon" class="icon">
+        <h1>The very awesome:</h1>
+        <h2 class="player-name"></h2>
+        <p>Has won hoggo's</p>
+        <p><span id="game-type"></span> awareness game for HR!</p>
+    </div>
+    <button onclick="window.print()">Print Certificate</button>
+
+    <script>
+        function updateCertificate() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const playerName = urlParams.get('name');
+            const gameType = urlParams.get('game');
+            
+            document.querySelector('.player-name').textContent = playerName || 'Player';
+            document.getElementById('game-type').textContent = gameType || 'privacy';
+        }
+        updateCertificate();
+    </script>
+</body>
+</html>

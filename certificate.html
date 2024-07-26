@@ -117,29 +117,15 @@
             });
         }
 
-        function shareOnLinkedIn() {
-            html2canvas(document.getElementById('certificate')).then(canvas => {
-                canvas.toBlob(function(blob) {
-                    const formData = new FormData();
-                    formData.append('image', blob, 'certificate.png');
-
-                    fetch('/upload-certificate', {
-                        method: 'POST',
-                        body: formData
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        const imageUrl = data.imageUrl;
-                        const playerName = document.querySelector('.player-name').textContent;
-                        const gameType = document.getElementById('game-type').textContent;
-                        const title = encodeURIComponent(`I've completed the ${gameType} awareness game for HR!`);
-                        const summary = encodeURIComponent(`Check out my certificate for completing hoggo's ${gameType} awareness game.`);
-                        const linkedInShareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}&title=${title}&summary=${summary}&source=${encodeURIComponent(imageUrl)}`;
-                        window.open(linkedInShareUrl, '_blank');
-                    })
-                    .catch(error => console.error('Error:', error));
-                }, 'image/png');
-            });
+function shareOnLinkedIn() {
+    const playerName = document.querySelector('.player-name').textContent;
+    const gameType = document.getElementById('game-type').textContent;
+    const title = encodeURIComponent(`I've completed the ${gameType} awareness game for HR!`);
+    const summary = encodeURIComponent(`${playerName} has completed Hoggo's ${gameType} awareness game for HR professionals.`);
+    const imageUrl = encodeURIComponent('https://privacygames.online/certificate.png');
+    const linkedInShareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}&title=${title}&summary=${summary}&source=${imageUrl}`;
+    window.open(linkedInShareUrl, '_blank');
+}
         }
 
         updateCertificate();

@@ -8,7 +8,9 @@
     <meta property="og:title" content="HR Privacy Awareness Game Certificate">
     <meta property="og:description" content="I've completed the HR Privacy Awareness Game by Hoggo!">
     <meta property="og:image" content="https://i.postimg.cc/RZdgcRR6/favicon.png">
-    <meta property="og:url" content="https://privacygames.online/certificate.html">
+    <meta property="og:url" content="https://yourdomain.com/certificate.html">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.5.0-beta4/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -16,39 +18,44 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 100vh;
+            min-height: 100vh;
             margin: 0;
             background-color: #f0f0f0;
         }
         .certificate {
             background-color: #1e6f5c;
             color: white;
-            width: 300px;
-            height: 200px;
+            width: 1200px;
+            height: 600px;
             border-radius: 20px;
-            padding: 20px;
+            padding: 40px;
             text-align: center;
             font-family: Arial, sans-serif;
             margin: 20px auto;
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            box-sizing: border-box;
         }
         .icon {
-            width: 40px;
-            height: 40px;
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
         }
         h1 {
-            font-size: 24px;
-            margin-bottom: 10px;
+            font-size: 48px;
+            margin-bottom: 20px;
         }
         .player-name {
-            font-size: 20px;
-            border-bottom: 2px solid white;
-            padding-bottom: 5px;
-            margin-bottom: 10px;
+            font-size: 40px;
+            border-bottom: 4px solid white;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
         }
         p {
-            font-size: 16px;
-            margin: 5px 0;
+            font-size: 32px;
+            margin: 10px 0;
         }
         button {
             margin: 10px;
@@ -87,14 +94,14 @@
     </style>
 </head>
 <body>
-    <div class="certificate">
-        <img src="https://i.postimg.cc/d3gwLrBw/favicon.png" alt="hoggo icon" class="icon">
+    <div class="certificate" id="certificate">
+        <img src="https://i.postimg.cc/d3gwLrBw/favicon.png" alt="Hoggo icon" class="icon">
         <h1>The very awesome:</h1>
         <h2 class="player-name"></h2>
         <p>Has won hoggo's</p>
         <p><span id="game-type"></span> awareness game for HR!</p>
     </div>
-    <button class="print-button" onclick="window.print()">Print Certificate</button>
+    <button class="print-button" onclick="generatePDF()">Generate PDF</button>
     <button class="share-button" onclick="shareOnLinkedIn()">Share on LinkedIn</button>
 
     <script>
@@ -111,14 +118,27 @@
             document.querySelector('meta[property="og:description"]').setAttribute('content', `${playerName} has completed the ${gameType} awareness game for HR by Hoggo!`);
         }
 
+        function generatePDF() {
+            html2canvas(document.getElementById('certificate')).then(canvas => {
+                const imgData = canvas.toDataURL('image/png');
+                const pdf = new jspdf.jsPDF({
+                    orientation: 'landscape',
+                    unit: 'px',
+                    format: [1200, 600]
+                });
+                pdf.addImage(imgData, 'PNG', 0, 0, 1200, 600);
+                pdf.save("certificate.pdf");
+            });
+        }
+
         function shareOnLinkedIn() {
+            generatePDF();
             const playerName = document.querySelector('.player-name').textContent;
             const gameType = document.getElementById('game-type').textContent;
-            const shareUrl = encodeURIComponent(window.location.href);
             const title = encodeURIComponent(`I've completed the ${gameType} awareness game for HR!`);
             const summary = encodeURIComponent(`Check out my certificate for completing Hoggo's ${gameType} awareness game for HR professionals.`);
 
-            const linkedInShareUrl = `https://www.linkedin.com/shareArticle?mini=true&url=${shareUrl}&title=${title}&summary=${summary}`;
+            const linkedInShareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}&title=${title}&summary=${summary}`;
             window.open(linkedInShareUrl, '_blank');
         }
 
